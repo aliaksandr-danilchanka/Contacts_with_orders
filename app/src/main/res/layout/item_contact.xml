@@ -21,8 +21,7 @@
             android:layout_marginBottom="@dimen/margin_between_text"
             android:layout_marginLeft="@dimen/margin_between_elements"
             android:layout_marginRight="@dimen/margin_between_elements"
-            android:layout_marginTop="@dimen/margin_between_text"
-            android:background="@drawable/contact_icon"/>
+            android:layout_marginTop="@dimen/margin_between_text"/>
 
 
         <TextView
