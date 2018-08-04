@@ -16,13 +16,13 @@ data class Contact(
         ("id") val id: String,
 
         @ColumnInfo(name = "name")
-        @SerializedName("name") val name: String,
+        @SerializedName("name") val name: String?,
 
         @ColumnInfo(name = "phone")
-        @SerializedName("phone") val phone: String,
+        @SerializedName("phone") val phone: String?,
 
         @ColumnInfo(name = "pictureUrl")
-        @SerializedName("pictureUrl") val pictureUrl: String
+        @SerializedName("pictureUrl") val pictureUrl: String?
 )
 
 data class ContactListResponse(@SerializedName("items") val items: ArrayList<Contact>)
