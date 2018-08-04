@@ -1,17 +1,24 @@
 package danilchanka.aliaksandr.contacts.viewModel
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import danilchanka.aliaksandr.contacts.api.RestHelper
 import danilchanka.aliaksandr.contacts.model.Contact
 import danilchanka.aliaksandr.contacts.model.ContactListResponse
+import danilchanka.aliaksandr.contacts.repository.ContactListRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class ContactListViewModel : ViewModel() {
+class ContactListViewModel(application: Application) : AndroidViewModel(application) {
 
     private var mContactList: MutableLiveData<List<Contact>>? = null
+    private var mContactListRepository: ContactListRepository? = null
+
+    init {
+        mContactListRepository = ContactListRepository(application)
+    }
 
     fun getContactList(): LiveData<List<Contact>>? {
         if (mContactList == null) {
@@ -21,16 +28,35 @@ class ContactListViewModel : ViewModel() {
         return mContactList
     }
 
-    private fun loadData() {
-        val apiService = RestHelper.create()
-        apiService.getContactList()
-                .map(ContactListResponse::items)
+    private fun getContactListFromCache() {
+        mContactListRepository!!.getContactListFromCache()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .subscribe({ result ->
                     mContactList!!.value = result
                 }, { error ->
                     error.printStackTrace()
+                })
+    }
+
+    private fun deleteAndInsertContactListFromCache(contactList: List<Contact>) {
+        mContactListRepository!!.deleteAndInsertAll(contactList)
+    }
+
+    private fun loadData() {
+        val apiService = RestHelper.create()
+        apiService.getContactList()
+                .map(ContactListResponse::items)
+//                .flatMap { Observable.fromIterable(it) }
+//                .toSortedList{contact1, contact2 -> contact1.name.compareTo(contact2.name, true) }
+//                .map { ArrayList<Contact>() }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ result ->
+                    mContactList!!.value = result
+                    deleteAndInsertContactListFromCache(result)
+                }, { error ->
+                    error.printStackTrace()
+                    getContactListFromCache()
                 })
     }
 }
