@@ -10,7 +10,7 @@ import danilchanka.aliaksandr.contacts.R
 import danilchanka.aliaksandr.contacts.model.Contact
 import kotlinx.android.synthetic.main.item_contact.view.*
 
-class ContactListAdapter(val contacts: List<Contact>?, private val context: Context?)
+class ContactListAdapter(var contacts: List<Contact>?, private val context: Context?)
     : RecyclerView.Adapter<ContactListAdapter.ContactListHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactListHolder {
@@ -21,11 +21,16 @@ class ContactListAdapter(val contacts: List<Contact>?, private val context: Cont
         return contacts!!.size
     }
 
+    fun setContactList(contactList: List<Contact>?){
+        contacts = contactList
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: ContactListHolder, position: Int) {
         holder.mTxtName.text = contacts!![position].name
-        holder.mTxtPhone.text = contacts[position].phone
+        holder.mTxtPhone.text = contacts!![position].phone
         Picasso.with(holder.itemView.context)
-                .load(contacts[position].pictureUrl)
+                .load(contacts!![position].pictureUrl)
                 .placeholder(R.drawable.contact_icon)
                 .into(holder.mImgUserIcon)
     }
