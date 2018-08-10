@@ -31,27 +31,35 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
+    //ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
+    //Room database
     implementation "android.arch.persistence.room:runtime:1.1.1"
     kapt "android.arch.persistence.room:compiler:1.1.1"
     androidTestImplementation "android.arch.persistence.room:testing:1.1.1"
     implementation "android.arch.persistence.room:rxjava2:1.1.1"
 
+    //RecyclerView, CardView and Design
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
 
+    //Picasso
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
+    //CircleImageView
     implementation 'de.hdodenhof:circleimageview:2.1.0'
 
+    //Retrofit2
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation "com.squareup.retrofit2:adapter-rxjava2:2.4.0"
 
+    //RxJava2
     implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
 
+    //OkHttp logger
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
 
     testImplementation 'junit:junit:4.12'
