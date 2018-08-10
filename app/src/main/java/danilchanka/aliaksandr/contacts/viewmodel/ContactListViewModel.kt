@@ -1,4 +1,4 @@
-package danilchanka.aliaksandr.contacts.viewModel
+package danilchanka.aliaksandr.contacts.viewmodel
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
@@ -46,9 +46,6 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
         val apiService = RestHelper.create()
         apiService.getContactList()
                 .map(ContactListResponse::items)
-//                .flatMap { Observable.fromIterable(it) }
-//                .toSortedList{contact1, contact2 -> contact1.name.compareTo(contact2.name, true) }
-//                .map { ArrayList<Contact>() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ result ->

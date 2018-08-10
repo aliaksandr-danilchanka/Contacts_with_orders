@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import danilchanka.aliaksandr.contacts.R
 import danilchanka.aliaksandr.contacts.adapter.ContactListAdapter
-import danilchanka.aliaksandr.contacts.viewModel.ContactListViewModel
+import danilchanka.aliaksandr.contacts.viewmodel.ContactListViewModel
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 
 class ContactListFragment : Fragment() {
 
-    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var mLinearLayoutManager: LinearLayoutManager
 
     companion object {
         fun newInstance(): ContactListFragment = ContactListFragment()
@@ -27,8 +27,8 @@ class ContactListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        linearLayoutManager = LinearLayoutManager(context)
-        recycler_view.layoutManager = linearLayoutManager
+        mLinearLayoutManager = LinearLayoutManager(context)
+        recycler_view.layoutManager = mLinearLayoutManager
 
         val model = ViewModelProviders.of(this).get(ContactListViewModel::class.java)
         model.getContactList()!!.observe(this, Observer { contacts ->
