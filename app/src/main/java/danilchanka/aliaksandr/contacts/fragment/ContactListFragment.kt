@@ -32,7 +32,9 @@ class ContactListFragment : Fragment() {
 
         val model = ViewModelProviders.of(this).get(ContactListViewModel::class.java)
         model.getContactList()!!.observe(this, Observer { contacts ->
-            recycler_view.adapter = ContactListAdapter(contacts, context)
+            val adapter = ContactListAdapter()
+            adapter.setElements(contacts!!)
+            recycler_view.adapter = adapter
         })
     }
 }

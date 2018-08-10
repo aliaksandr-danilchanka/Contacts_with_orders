@@ -1,43 +1,13 @@
 package danilchanka.aliaksandr.contacts.adapter
 
-import android.content.Context
-import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.squareup.picasso.Picasso
+import danilchanka.aliaksandr.contacts.BR
 import danilchanka.aliaksandr.contacts.R
+import danilchanka.aliaksandr.contacts.adapter.base.BaseAdapter
 import danilchanka.aliaksandr.contacts.model.Contact
-import kotlinx.android.synthetic.main.item_contact.view.*
 
-class ContactListAdapter(var contacts: List<Contact>?, private val context: Context?)
-    : RecyclerView.Adapter<ContactListAdapter.ContactListHolder>() {
+class ContactListAdapter : BaseAdapter<Contact>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactListHolder {
-        return ContactListHolder(LayoutInflater.from(context).inflate(R.layout.item_contact, parent, false))
-    }
+    override val itemLayoutId: Int = R.layout.item_contact
+    override val variableId: Int = BR.contact
 
-    override fun getItemCount(): Int {
-        return contacts!!.size
-    }
-
-    fun setContactList(contactList: List<Contact>?){
-        contacts = contactList
-        notifyDataSetChanged()
-    }
-
-    override fun onBindViewHolder(holder: ContactListHolder, position: Int) {
-        holder.mTxtName.text = contacts!![position].name
-        holder.mTxtPhone.text = contacts!![position].phone
-        Picasso.with(holder.itemView.context)
-                .load(contacts!![position].pictureUrl)
-                .placeholder(R.drawable.contact_icon)
-                .into(holder.mImgUserIcon)
-    }
-
-    class ContactListHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val mImgUserIcon = view.img_user_icon!!
-        val mTxtName = view.txt_name!!
-        val mTxtPhone = view.txt_phone!!
-    }
 }
