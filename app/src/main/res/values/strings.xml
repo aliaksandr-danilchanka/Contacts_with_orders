@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Contacts</string>
+
+    <string name="reload">Reload</string>
+
+    <string name="no_data">No data in cache</string>
+    <string name="internet_connection_error">Internet connection error</string>
+
+    <string name="action_add">Create new contact</string>
 </resources>
