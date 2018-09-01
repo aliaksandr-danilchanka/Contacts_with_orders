@@ -1,26 +1,59 @@
 package danilchanka.aliaksandr.contacts.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.databinding.ObservableBoolean
+import android.view.View
+import danilchanka.aliaksandr.contacts.adapter.ContactListAdapter
 import danilchanka.aliaksandr.contacts.api.RestHelper
 import danilchanka.aliaksandr.contacts.model.Contact
 import danilchanka.aliaksandr.contacts.model.ContactListResponse
 import danilchanka.aliaksandr.contacts.repository.ContactListRepository
+import danilchanka.aliaksandr.contacts.view.ContactListView
+import danilchanka.aliaksandr.contacts.viewmodel.base.BaseLoadingViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class ContactListViewModel(application: Application) : AndroidViewModel(application) {
+class ContactListViewModel(application: Application) : BaseLoadingViewModel<ContactListView>(application) {
 
-    private var mContactList: MutableLiveData<List<Contact>>? = null
+    private var mContactList: MutableLiveData<ContactListAdapter>? = null
     private var mContactListRepository: ContactListRepository? = null
+
+    var isLoading = ObservableBoolean(false)
+    var isError = ObservableBoolean(false)
+
+    private var isDatabaseError: Boolean = false
+    private var isConnectionError: Boolean = false
 
     init {
         mContactListRepository = ContactListRepository(application)
     }
 
-    fun getContactList(): LiveData<List<Contact>>? {
+    override fun attachView(view: ContactListView) {
+        super.attachView(view)
+        showViewErrors()
+    }
+
+    fun reloadContactList(view: View) {
+        loadData()
+    }
+
+    fun refreshContactList() {
+        loadData()
+    }
+
+    fun onSwipeToRefresh() {
+        loadDataFromApi()
+    }
+
+    fun onActionAddClick() {
+        if (isViewAttached()) {
+            getView().startCreateNewContact()
+        }
+    }
+
+    fun getContactList(): LiveData<ContactListAdapter>? {
         if (mContactList == null) {
             mContactList = MutableLiveData()
             loadData()
@@ -29,13 +62,22 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun getContactListFromCache() {
-        mContactListRepository!!.getContactListFromCache()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result ->
-                    mContactList!!.value = result
-                }, { error ->
-                    error.printStackTrace()
-                })
+        addSubscription(
+                mContactListRepository!!.getContactListFromCache()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({ result ->
+                            if(result.isEmpty()){
+                                isDatabaseError = true
+                                isLoading.set(true)
+                                isError.set(true)
+                                showViewErrors()
+                            }
+                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter()
+                            mContactList!!.value!!.setElements(result)
+                        }, { error ->
+                            error.printStackTrace()
+                        })
+        )
     }
 
     private fun deleteAndInsertContactListFromCache(contactList: List<Contact>) {
@@ -43,17 +85,43 @@ class ContactListViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     private fun loadData() {
-        val apiService = RestHelper.create()
-        apiService.getContactList()
-                .map(ContactListResponse::items)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ result ->
-                    mContactList!!.value = result
-                    deleteAndInsertContactListFromCache(result)
-                }, { error ->
-                    error.printStackTrace()
-                    getContactListFromCache()
-                })
+        isLoading.set(true)
+        isError.set(false)
+        loadDataFromApi()
+    }
+
+    private fun loadDataFromApi(){
+        addSubscription(
+                RestHelper.getRestInterface()
+                        .getContactList()
+                        .map(ContactListResponse::items)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({ result ->
+                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter()
+                            mContactList!!.value!!.setElements(result)
+                            deleteAndInsertContactListFromCache(result)
+                            isLoading.set(false)
+                        }, { error ->
+                            error.printStackTrace()
+                            getContactListFromCache()
+                            isLoading.set(false)
+                            isConnectionError = true
+                            showViewErrors()
+                        })
+        )
+    }
+
+    private fun showViewErrors() {
+        if (isViewAttached()) {
+            if (isDatabaseError) {
+                getView().onDatabaseError()
+                isDatabaseError = false
+            }
+            if (isConnectionError) {
+                getView().onConnectionError()
+                isConnectionError = false
+            }
+        }
     }
 }
