@@ -40,7 +40,7 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
     }
 
     fun refreshContactList() {
-        loadData()
+        loadDataFromApi()
     }
 
     fun onSwipeToRefresh() {
@@ -72,7 +72,7 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
                                 isError.set(true)
                                 showViewErrors()
                             }
-                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter()
+                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter(this)
                             mContactList!!.value!!.setElements(result)
                         }, { error ->
                             error.printStackTrace()
@@ -98,7 +98,7 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter()
+                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter(this)
                             mContactList!!.value!!.setElements(result)
                             deleteAndInsertContactListFromCache(result)
                             isLoading.set(false)
@@ -110,6 +110,9 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
                             showViewErrors()
                         })
         )
+    }
+
+    fun onClickContact(view: View, contact: Contact) {
     }
 
     private fun showViewErrors() {
