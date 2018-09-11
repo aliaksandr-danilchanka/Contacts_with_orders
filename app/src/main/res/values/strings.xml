@@ -7,4 +7,13 @@
     <string name="internet_connection_error">Internet connection error</string>
 
     <string name="action_add">Create new contact</string>
+
+    <string name="create_new_contact_name_hint">First and last name</string>
+    <string name="create_new_contact_phone_hint">Phone number</string>
+    <string name="create_new_contact_create">Create</string>
+    <string name="create_new_contact_success">New user successfully created!</string>
+
+    <string name="error_empty_field">Field cannot be empty</string>
+    <string name="error_min_length_field">Field must contain at least 5 characters</string>
+    <string name="error_create_new_user">An error occurred while creating new user</string>
 </resources>

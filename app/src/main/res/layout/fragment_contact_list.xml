@@ -57,10 +57,10 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
                     android:layout_below="@+id/image_wifi"
-                    android:text="@string/reload"
-                    android:onClick="@{contactListViewModel.reloadContactList}"/>
+                    android:layout_centerInParent="true"
+                    android:onClick="@{contactListViewModel::reloadContactList}"
+                    android:text="@string/reload"/>
             </RelativeLayout>
         </FrameLayout>
     </LinearLayout>
