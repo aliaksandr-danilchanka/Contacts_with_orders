@@ -1,6 +1,7 @@
 package danilchanka.aliaksandr.contacts.fragment
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -10,12 +11,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
 import danilchanka.aliaksandr.contacts.R
+import danilchanka.aliaksandr.contacts.activity.ContactDetailActivity
 import danilchanka.aliaksandr.contacts.activity.CreateNewContactActivity
 import danilchanka.aliaksandr.contacts.databinding.FragmentContactListBinding
 import danilchanka.aliaksandr.contacts.fragment.base.BaseFragment
+import danilchanka.aliaksandr.contacts.model.Contact
 import danilchanka.aliaksandr.contacts.view.ContactListView
 import danilchanka.aliaksandr.contacts.viewmodel.ContactListViewModel
 import kotlinx.android.synthetic.main.fragment_contact_list.*
+import kotlinx.android.synthetic.main.item_contact.view.*
 
 class ContactListFragment : BaseFragment<FragmentContactListBinding, ContactListViewModel>(), ContactListView {
 
@@ -86,6 +90,14 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding, ContactList
         startActivityForResult(intent, CreateNewContactActivity.REQUEST_CODE)
     }
 
+    override fun onContactClick(contact: Contact, view: View) {
+        val intent = Intent(activity, ContactDetailActivity::class.java)
+        intent.putExtra(ContactDetailActivity.ARG_CONTACT, contact)
+        val transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation(activity,
+                view.img_user_icon, getString(R.string.user_icon_transition))
+        startActivity(intent, transitionActivityOptions.toBundle())
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == CreateNewContactActivity.REQUEST_CODE) {
@@ -96,7 +108,7 @@ class ContactListFragment : BaseFragment<FragmentContactListBinding, ContactList
         }
     }
 
-    private fun initRecyclerView(){
+    private fun initRecyclerView() {
         mLinearLayoutManager = LinearLayoutManager(context)
         recycler_view.layoutManager = mLinearLayoutManager
     }
