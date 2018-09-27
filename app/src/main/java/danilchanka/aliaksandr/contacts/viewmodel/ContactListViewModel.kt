@@ -66,13 +66,13 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
                 mContactListRepository!!.getContactListFromCache()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({ result ->
-                            if(result.isEmpty()){
+                            if (result.isEmpty()) {
                                 isDatabaseError = true
                                 isLoading.set(true)
                                 isError.set(true)
                                 showViewErrors()
                             }
-                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter(this)
+                            if (mContactList!!.value == null) mContactList!!.value = ContactListAdapter(this)
                             mContactList!!.value!!.setElements(result)
                         }, { error ->
                             error.printStackTrace()
@@ -90,7 +90,7 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
         loadDataFromApi()
     }
 
-    private fun loadDataFromApi(){
+    private fun loadDataFromApi() {
         addSubscription(
                 RestHelper.getRestInterface()
                         .getContactList()
@@ -98,7 +98,7 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe({ result ->
-                            if(mContactList!!.value == null) mContactList!!.value = ContactListAdapter(this)
+                            if (mContactList!!.value == null) mContactList!!.value = ContactListAdapter(this)
                             mContactList!!.value!!.setElements(result)
                             deleteAndInsertContactListFromCache(result)
                             isLoading.set(false)
@@ -113,6 +113,9 @@ class ContactListViewModel(application: Application) : BaseLoadingViewModel<Cont
     }
 
     fun onClickContact(view: View, contact: Contact) {
+        if (isViewAttached()) {
+            getView().onContactClick(contact, view)
+        }
     }
 
     private fun showViewErrors() {
