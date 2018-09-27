@@ -1,5 +1,6 @@
 package danilchanka.aliaksandr.contacts.adapter.base
 
+import android.arch.lifecycle.ViewModel
 import android.databinding.DataBindingUtil
 import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
@@ -7,12 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-abstract class BaseAdapter<E> : RecyclerView.Adapter<BaseAdapter.BindingHolder>() {
+abstract class BaseAdapter<E, VM : ViewModel>(private val viewModel: VM) : RecyclerView.Adapter<BaseAdapter.BindingHolder>() {
 
     private var mElements: List<E>? = null
 
     abstract val itemLayoutId: Int
     abstract val variableId: Int
+    abstract val viewModelId: Int
 
     init {
         mElements = ArrayList()
@@ -32,6 +34,7 @@ abstract class BaseAdapter<E> : RecyclerView.Adapter<BaseAdapter.BindingHolder>(
     override fun onBindViewHolder(holder: BindingHolder, position: Int) {
         val element = mElements!![position]
         holder.binding!!.setVariable(variableId, element)
+        holder.binding.setVariable(viewModelId, viewModel)
         holder.binding.executePendingBindings()
     }
 
