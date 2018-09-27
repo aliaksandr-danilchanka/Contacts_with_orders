@@ -45,19 +45,20 @@
                 android:layout_height="match_parent"
                 app:show="@{contactListViewModel.isError}">
 
-                <ImageView
-                    android:id="@+id/image_wifi"
-                    android:layout_width="@dimen/no_wifi_image_size"
-                    android:layout_height="@dimen/no_wifi_image_size"
+                <TextView
+                    android:id="@+id/txt_error"
+                    style="@style/TextMedium.BlackPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_do_not_wifi"/>
-
+                    android:gravity="center"
+                    android:text="@string/loading_error"/>
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/image_wifi"
+                    android:layout_below="@+id/txt_error"
                     android:layout_centerInParent="true"
                     android:onClick="@{contactListViewModel::reloadContactList}"
                     android:text="@string/reload"/>
