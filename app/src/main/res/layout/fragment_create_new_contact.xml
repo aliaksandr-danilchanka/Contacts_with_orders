@@ -1,6 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</LinearLayout>
+    <data>
+
+        <variable
+            name="createNewContactViewModel"
+            type="danilchanka.aliaksandr.contacts.viewmodel.CreateNewContactViewModel"/>
+    </data>
+
+    <LinearLayout
+        android:id="@+id/create_new_contact_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:hide="@{createNewContactViewModel.isLoading}">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_between_text"
+                android:layout_marginLeft="@dimen/margin_between_elements"
+                android:layout_marginRight="@dimen/margin_between_elements"
+                android:layout_marginTop="@dimen/margin_between_text">
+
+                <EditText
+                    android:id="@+id/edit_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_new_contact_name_hint"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
+                    android:onTextChanged="@{(text, start, before, count) -> createNewContactViewModel.changeName(text)}"
+                    android:text="@{createNewContactViewModel.name}"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_between_text"
+                android:layout_marginLeft="@dimen/margin_between_elements"
+                android:layout_marginRight="@dimen/margin_between_elements"
+                android:layout_marginTop="@dimen/margin_between_text">
+
+                <EditText
+                    android:id="@+id/edit_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/create_new_contact_phone_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:onTextChanged="@{(text, start, before, count) -> createNewContactViewModel.changePhone(text)}"
+                    android:text="@{createNewContactViewModel.phone}"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/btn_create"
+                style="@style/ButtonRaised"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_between_elements"
+                android:background="@drawable/button_primary"
+                android:onClick="@{createNewContactViewModel::onSubmitClick}"
+                android:text="@string/create_new_contact_create"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:show="@{createNewContactViewModel.isLoading}">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+    </LinearLayout>
+</layout>
